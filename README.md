@@ -1,5 +1,9 @@
 # gh-action-pypi-upload
-GitHub action to upload to PyPi
+Use this GitHub action to upload a Python package to PyPi
+
+## Prereqs 
+
+* You can `pip install` your library locally and import it
 
 ## Usage 
 
@@ -22,7 +26,8 @@ action "PyPI" {
 
 *  Update `PYPI_USERNAME`, `PYPI_PASSWORD` secrets in repo settings
 
-*Note: Once you release a version of your package to PyPi you cannot release that same version number*
+*Note: Once you release a version of your package to PyPi you cannot rerelease that same version number, even if you delete it*
 
 * Make a test release and confirm the repo shows up on [TestPyPI](https://test.pypi.org/)
+
 * If it works, change `TWINE_REPOSITORY_URL = "https://upload.pypi.org/legacy/"` to point to production PyPi server
