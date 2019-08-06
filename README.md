@@ -3,7 +3,7 @@ Use this GitHub action to upload a Python package to PyPi
 
 ## Prereqs 
 
-* You can `pip install` your library locally and import it
+* You can `pip install` the library locally and import it
 
 ## Usage 
 
