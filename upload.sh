@@ -24,6 +24,9 @@ upload_to_pypi () {
     # Create distributions
     python setup.py -q sdist bdist_wheel
 
+    # Upgrade pip
+    pip install --user --upgrade pip
+
     # Install twine, module used to upload to pypi
     pip install --user twine -q
 
