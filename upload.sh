@@ -30,7 +30,7 @@ upload_to_pypi () {
     
     # Upgrade pip
     python -m pip install --upgrade pip -q
-    
+
     # Install twine, module used to upload to pypi
     python -m pip install twine -q
 
