@@ -24,11 +24,15 @@ upload_to_pypi () {
     # Create distributions
     python setup.py -q sdist bdist_wheel
 
+    # Create virtualenv to download twine
+    python -m venv venv
+    . venv/bin/activate
+    
     # Upgrade pip
-    pip install --user --upgrade pip
-
+    python -m pip install --upgrade pip -q
+    
     # Install twine, module used to upload to pypi
-    pip install --user twine -q
+    python -m pip install twine -q
 
     # Upload to pypi or testpypi, overwrite if files already exist.
     python -m twine upload dist/* --skip-existing --verbose \
