@@ -21,7 +21,7 @@ echo "=================================================="
 echo
 
 upload_to_pypi() {
-    # Checkout specified tag
+    # Checkout release tag
     git checkout tags/$tag
 
     # Create virtualenv to download twine
@@ -90,5 +90,5 @@ release() {
     fi
 }
 
-# If release was published on GitHub then upload to PyPI
+# If release was published on GitHub then release to PyPI.
 if [ $action = "published" ]; then release; fi
