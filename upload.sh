@@ -35,9 +35,7 @@ upload_to_pypi() {
     python -m pip install twine -q
 
     # Remove build artifacts
-    artifacts=( ".eggs" "dist" "build" )
-    for artifact in "${artifacts[@]}"
-    do
+    for artifact in ".eggs" "dist" "build"; do
     if [ -d $artifact ]; then rm -rf $artifact; fi
     done
 
@@ -72,14 +70,12 @@ release() {
     ")
 
     # If the inferred repository is PyPI, then upload to PyPI.
-    if [ $repository = "PyPI" ]
-    then
+    if [ $repository = "PyPI" ]; then
         TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
         upload_to_pypi $PYPI_USERNAME $PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
     # Else if the inferred repository is Test PyPI, then upload to Test PyPI.
-    elif [ $repository = "Test PyPI" ]
-    then
+    elif [ $repository = "Test PyPI" ]; then
         TWINE_REPOSITORY_URL="https://test.pypi.org/legacy/"
         upload_to_pypi $TEST_PYPI_USERNAME $TEST_PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
