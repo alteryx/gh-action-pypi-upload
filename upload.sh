@@ -50,7 +50,7 @@ upload_to_pypi() {
 }
 
 release() {
-    # Infers whether to upload to PyPI or Test PyPI.
+    # From the release tag, infers whether to use PyPI or Test PyPI.
     repository=$(python -c "
     import re
 
@@ -71,13 +71,13 @@ release() {
             print('Test PyPI')
     ")
 
-    # If inference for PyPI, then upload to PyPI.
+    # If the inferred repository is PyPI, then upload to PyPI.
     if [ $repository = "PyPI" ]
     then
         TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
         upload_to_pypi $PYPI_USERNAME $PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
-    # Else if inference for Test PyPI, then upload to Test PyPI.
+    # Else if the inferred repository is Test PyPI, then upload to Test PyPI.
     elif [ $repository = "Test PyPI" ]
     then
         TWINE_REPOSITORY_URL="https://test.pypi.org/legacy/"
@@ -90,5 +90,5 @@ release() {
     fi
 }
 
-# If release was published on GitHub then release to PyPI.
+# If release was published on GitHub then release to PyPI or Test PyPI.
 if [ $action = "published" ]; then release; fi
