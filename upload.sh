@@ -18,25 +18,11 @@ echo
 echo "=================================================="
 echo "Release $tag was $action on GitHub"
 echo "=================================================="
-
-build_package() {
-    # Remove build artifacts
-    artifacts=( ".eggs" "dist" "build" )
-    for artifact in "${artifacts[@]}"
-    do
-    if [ -d $artifact ]; then rm -rf $artifact; fi
-    done
-
-    # Create distributions
-    python setup.py -q sdist bdist_wheel
-}
+echo
 
 upload_to_pypi() {
     # Checkout specified tag
     git checkout tags/$tag
-
-    # Create pypi package
-    build_package
 
     # Create virtualenv to download twine
     python -m venv venv
@@ -48,20 +34,27 @@ upload_to_pypi() {
     # Install twine, module used to upload to pypi
     python -m pip install twine -q
 
+    # Remove build artifacts
+    artifacts=( ".eggs" "dist" "build" )
+    for artifact in "${artifacts[@]}"
+    do
+    if [ -d $artifact ]; then rm -rf $artifact; fi
+    done
+
+    # Create distributions
+    python setup.py -q sdist bdist_wheel
+
     # Upload to pypi or testpypi, overwrite if files already exist.
     python -m twine upload dist/* --skip-existing --verbose \
-        --username $username --password $password \
-        --repository-url $repository_url
+        --username $1 --password $2 --repository-url $3
 }
 
-# If release was published on GitHub then upload to PyPI
-if [ $action = "published" ]
-then
-    # Infer whether to use PyPI (production) or Test PyPI (development).
+release() {
+    # Infers whether to upload to PyPI or Test PyPI.
     repository=$(python -c "
     import re
 
-    pattern = '(?P<version>v{n}.{n}.{n})(?P<suffix>.*)?'
+    pattern = '(?P<version>^v{n}.{n}.{n})(?P<suffix>.*)?'
     pattern = pattern.format(n='[0-9]+')
     pattern = re.compile(pattern)
     match = pattern.search('$tag')
@@ -72,35 +65,30 @@ then
         version, suffix = map(match.get, keys)
 
         if version and not suffix:
-            print('production')
+            print('PyPI')
 
         if version and suffix.startswith('.dev'):
-            print('development')
+            print('Test PyPI')
     ")
 
-    # Raise error if unable to make the inference for PyPI or Test PyPI.
-    if [ -z $repository ]
+    # If inference for PyPI, then upload to PyPI.
+    if [ $repository = "PyPI" ]
     then
-        echo "Unable to infer which PyPI repository to use."
+        TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
+        upload_to_pypi $PYPI_USERNAME $PYPI_PASSWORD $TWINE_REPOSITORY_URL
+
+    # Else if inference for Test PyPI, then upload to Test PyPI.
+    elif [ $repository = "Test PyPI" ]
+    then
+        TWINE_REPOSITORY_URL="https://test.pypi.org/legacy/"
+        upload_to_pypi $TEST_PYPI_USERNAME $TEST_PYPI_PASSWORD $TWINE_REPOSITORY_URL
+
+    # Else, raise an error and exit.
+    else
+        echo "Unable to make inference on release $tag"
         exit 1
     fi
+}
 
-    # If production, set variables for PyPI.
-    if [ $repository = "production" ]
-    then
-        username=$PYPI_USERNAME
-        password=$PYPI_PASSWORD
-        repository_url="https://upload.pypi.org/legacy/"
-    fi
-
-    # If development, set variables for Test PyPI.
-    if [ $repository = "development" ]
-    then
-        username=$TEST_PYPI_USERNAME
-        password=$TEST_PYPI_PASSWORD
-        repository_url="https://test.pypi.org/legacy/"
-    fi
-
-    upload_to_pypi
-
-fi
+# If release was published on GitHub then upload to PyPI
+if [ $action = "published" ]; then release; fi
