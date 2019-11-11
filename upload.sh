@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Get tag from environment
+# Get release tag from environment.
 tag=$(basename $GITHUB_REF)
 
-# Get action that triggered release event
+# Get action that triggered the release event.
 action=$(python -c "
 import json
 
@@ -13,6 +13,27 @@ with open('$GITHUB_EVENT_PATH', 'r') as file:
 
 print(action)
 ")
+
+# From the release tag, infer whether to use PyPI or Test PyPI.
+repository=$(python -c "
+import re
+
+pattern = '(?P<version>^v\d+.\d+.\d+)'
+pattern += '(?P<suffix>.*)?'
+pattern = re.compile(pattern)
+match = pattern.search('$tag')
+
+if match:
+    match = match.groupdict()
+    keys = ['version', 'suffix']
+    version, suffix = map(match.get, keys)
+
+    if version and not suffix:
+        print('PyPI')
+
+    if version and suffix.startswith('.dev'):
+        print('Test PyPI')
+    ")
 
 echo
 echo "=================================================="
@@ -48,27 +69,6 @@ upload_to_pypi() {
 }
 
 release() {
-    # From the release tag, infers whether to use PyPI or Test PyPI.
-    repository=$(python -c "
-    import re
-
-    pattern = '(?P<version>^v\d+.\d+.\d+)'
-    pattern += '(?P<suffix>.*)?'
-    pattern = re.compile(pattern)
-    match = pattern.search('$tag')
-
-    if match:
-        match = match.groupdict()
-        keys = ['version', 'suffix']
-        version, suffix = map(match.get, keys)
-
-        if version and not suffix:
-            print('PyPI')
-
-        if version and suffix.startswith('.dev'):
-            print('Test PyPI')
-    ")
-
     # If the inferred repository is PyPI, then upload to PyPI.
     if [ $repository = "PyPI" ]; then
         TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
