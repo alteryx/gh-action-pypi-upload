@@ -54,8 +54,8 @@ release() {
     repository=$(python -c "
     import re
 
-    pattern = '(?P<version>^v{n}.{n}.{n})(?P<suffix>.*)?'
-    pattern = pattern.format(n='[0-9]+')
+    pattern = '(?P<version>^v\d+.\d+.\d+)'
+    pattern += '(?P<suffix>.*)?'
     pattern = re.compile(pattern)
     match = pattern.search('$tag')
 
