@@ -41,24 +41,29 @@ echo "Release $tag was $action on GitHub"
 echo "=================================================="
 echo
 
-upload_to_pypi() {
-    # Checkout release tag
+build_package() {
+    # Checkout release tag.
     git checkout tags/$tag
 
-    # Create virtualenv to download twine
-    python -m venv venv
-    . venv/bin/activate
-
-    # Install twine, module used to upload to pypi
-    python -m pip install --quiet twine
-
-    # Remove build artifacts
+    # Remove build artifacts.
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
     # Create distributions
     python setup.py --quiet sdist bdist_wheel
+}
 
-    # Upload to pypi or testpypi, overwrite if files already exist.
+upload_to_pypi() {
+    # Build the package to upload.
+    build_package
+
+    # Create virtualenv to download twine.
+    python -m venv venv
+    . venv/bin/activate
+
+    # Install twine which is used to upload the package.
+    python -m pip install --quiet twine
+
+    # Upload the package to PyPI or Test PyPI. Overwrite if files already exist.
     python -m twine upload dist/* --skip-existing --verbose \
         --username $1 --password $2 --repository-url $3
 }
