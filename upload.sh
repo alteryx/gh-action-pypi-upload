@@ -35,12 +35,6 @@ if match:
         print('Test PyPI')
 ")
 
-echo
-echo "=================================================="
-echo "Release $tag was $action on GitHub"
-echo "=================================================="
-echo
-
 build_package() {
     # Checkout release tag.
     git checkout tags/$tag
@@ -87,6 +81,12 @@ release_package() {
         exit 1
     fi
 }
+
+echo
+echo "=================================================="
+echo "Release $tag was $action on GitHub"
+echo "=================================================="
+echo
 
 # If release was published on GitHub then release package.
 if [ $action = "published" ]; then release_package; fi
