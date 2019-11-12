@@ -1,4 +1,4 @@
-FROM python:3.7.3
+FROM python:3.7
 
 LABEL "com.github.actions.name"="PyPI"
 LABEL "com.github.actions.description"="Upload the release to PyPI when published on GitHub."
