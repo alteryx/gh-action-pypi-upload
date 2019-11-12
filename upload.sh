@@ -86,5 +86,5 @@ release_package() {
     fi
 }
 
-# If release was published on GitHub then release the package.
+# If release was published on GitHub then release package.
 if [ $action = "published" ]; then release_package; fi
