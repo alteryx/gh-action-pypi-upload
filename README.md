@@ -45,7 +45,7 @@ To upload a package to [PyPI](https://pypi.org/), the release tag should follow 
 ### Upload to Test PyPI
 To upload a package to [Test PyPI](https://test.pypi.org/), the release tag should follow this pattern:
 - `v0.0.0.dev0`
-- `v0.0.1.dev1`
+- `v0.0.0.dev1`
 - ...
 
 *Note: Once you release a version of your package to PyPI, you cannot rerelease that same version number even if you delete it.*
