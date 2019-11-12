@@ -14,7 +14,7 @@ with open('$GITHUB_EVENT_PATH', 'r') as file:
 print(action)
 ")
 
-# From the release tag, infer whether to use PyPI or Test PyPI.
+# Infer whether to use PyPI or Test PyPI from the release tag.
 repository=$(python -c "
 import re
 
@@ -33,7 +33,7 @@ if match:
 
     if version and suffix.startswith('.dev'):
         print('Test PyPI')
-    ")
+")
 
 echo
 echo "=================================================="
@@ -70,12 +70,12 @@ upload_to_pypi() {
 
 release() {
     # If the inferred repository is PyPI, then upload to PyPI.
-    if [ $repository = "PyPI" ]; then
+    if [ "$repository" = "PyPI" ]; then
         TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
         upload_to_pypi $PYPI_USERNAME $PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
     # Else if the inferred repository is Test PyPI, then upload to Test PyPI.
-    elif [ $repository = "Test PyPI" ]; then
+    elif [ "$repository" = "Test PyPI" ]; then
         TWINE_REPOSITORY_URL="https://test.pypi.org/legacy/"
         upload_to_pypi $TEST_PYPI_USERNAME $TEST_PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
@@ -86,5 +86,5 @@ release() {
     fi
 }
 
-# If release was published on GitHub then release to PyPI or Test PyPI.
+# If release was published on GitHub then release to PyPI.
 if [ $action = "published" ]; then release; fi
