@@ -1,33 +1,51 @@
-# gh-action-pypi-upload
-Use this GitHub action to upload a Python package to PyPi
+# GitHub Action - PyPI Upload
+Use this GitHub Action to upload a Python package to PyPI.
 
-## Prereqs 
+## Install
 
-* You can `pip install` the library locally and import it
+In your repository, add the following lines to `.github/workflows/release.yml`:
 
-## Usage 
+```yaml
+on:
+  release:
+    types: [published]
 
-Add the following lines to `.github/main.workflow`
-
+name: Release
+jobs:
+  pypi:
+    name: Release to PyPI
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Upload to PyPI
+      uses: FeatureLabs/gh-action-pypi-upload@master
+      env:
+        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TEST_PYPI_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+        TEST_PYPI_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
 ```
-workflow "Release" {
-  on = "release"
-  resolves = ["PyPI"]
-}
 
-action "PyPI" {
-  uses = "FeatureLabs/gh-action-pypi-upload@master"
-  secrets = ["PYPI_USERNAME", "PYPI_PASSWORD"]
-  env = {
-    TWINE_REPOSITORY_URL = "https://test.pypi.org/legacy/"
-    }
-}
-```
+Then, add the following secrets to the repository settings:
+  - `PYPI_USERNAME`
+  - `PYPI_PASSWORD`
+  - `TEST_PYPI_USERNAME`
+  - `TEST_PYPI_PASSWORD`
 
-*  Update `PYPI_USERNAME`, `PYPI_PASSWORD` secrets in repo settings
+## Usage
 
-*Note: Once you release a version of your package to PyPi you cannot rerelease that same version number, even if you delete it*
+The published release tag from GitHub will determine which repository the package is uploaded to.
 
-* Make a test release and confirm the repo shows up on [TestPyPI](https://test.pypi.org/)
+### Upload to PyPI
+To upload a package to [PyPI](https://pypi.org/), the release tag should follow this pattern:
+- `v0.0.0`
+- `v0.0.1`
+- ...
 
-* If it works, change `TWINE_REPOSITORY_URL = "https://upload.pypi.org/legacy/"` to point to production PyPi server
+### Upload to Test PyPI
+To upload a package to [Test PyPI](https://test.pypi.org/), the release tag should follow this pattern:
+- `v0.0.0.dev0`
+- `v0.0.1.dev1`
+- ...
+
+*Note: Once you release a version of your package to PyPI, you cannot rerelease that same version number even if you delete it.*
