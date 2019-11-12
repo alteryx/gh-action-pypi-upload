@@ -68,7 +68,7 @@ upload_to_pypi() {
         --username $1 --password $2 --repository-url $3
 }
 
-release() {
+release_package() {
     # If the inferred repository is PyPI, then upload to PyPI.
     if [ "$repository" = "PyPI" ]; then
         TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
@@ -86,5 +86,5 @@ release() {
     fi
 }
 
-# If release was published on GitHub then release to PyPI.
-if [ $action = "published" ]; then release; fi
+# If release was published on GitHub then release the package.
+if [ $action = "published" ]; then release_package; fi
