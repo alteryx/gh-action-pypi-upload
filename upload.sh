@@ -52,7 +52,7 @@ build_package() {
     python setup.py --quiet sdist bdist_wheel
 }
 
-upload_to_pypi() {
+upload_package() {
     # Build the package to upload.
     build_package
 
@@ -69,15 +69,15 @@ upload_to_pypi() {
 }
 
 release_package() {
-    # If the inferred repository is PyPI, then upload to PyPI.
+    # If the inferred repository is PyPI, then release to PyPI.
     if [ "$repository" = "PyPI" ]; then
         TWINE_REPOSITORY_URL="https://upload.pypi.org/legacy/"
-        upload_to_pypi $PYPI_USERNAME $PYPI_PASSWORD $TWINE_REPOSITORY_URL
+        upload_package $PYPI_USERNAME $PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
-    # Else if the inferred repository is Test PyPI, then upload to Test PyPI.
+    # Else if the inferred repository is Test PyPI, then release to Test PyPI.
     elif [ "$repository" = "Test PyPI" ]; then
         TWINE_REPOSITORY_URL="https://test.pypi.org/legacy/"
-        upload_to_pypi $TEST_PYPI_USERNAME $TEST_PYPI_PASSWORD $TWINE_REPOSITORY_URL
+        upload_package $TEST_PYPI_USERNAME $TEST_PYPI_PASSWORD $TWINE_REPOSITORY_URL
 
     # Else, raise an error and exit.
     else
