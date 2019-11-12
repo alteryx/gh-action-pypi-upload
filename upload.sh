@@ -45,6 +45,14 @@ upload_to_pypi() {
     # Checkout release tag
     git checkout tags/$tag
 
+    # Remove build artifacts
+    for artifact in ".eggs" "build" "dist"; do
+    if [ -d $artifact ]; then rm -rf $artifact; fi
+    done
+
+    # Create distributions
+    python setup.py -q sdist bdist_wheel
+
     # Create virtualenv to download twine
     python -m venv venv
     . venv/bin/activate
@@ -54,14 +62,6 @@ upload_to_pypi() {
 
     # Install twine, module used to upload to pypi
     python -m pip install twine -q
-
-    # Remove build artifacts
-    for artifact in ".eggs" "dist" "build"; do
-    if [ -d $artifact ]; then rm -rf $artifact; fi
-    done
-
-    # Create distributions
-    python setup.py -q sdist bdist_wheel
 
     # Upload to pypi or testpypi, overwrite if files already exist.
     python -m twine upload dist/* --skip-existing --verbose \
