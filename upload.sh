@@ -45,16 +45,19 @@ upload_to_pypi() {
     # Checkout release tag
     git checkout tags/$tag
 
+    # Upgrade pip
+    pip install --user --upgrade pip
+
+    # Install twine, module used to upload to pypi
+    pip install --user twine
+
     # Remove build artifacts
     for artifact in ".eggs" "build" "dist"; do
     if [ -d $artifact ]; then rm -rf $artifact; fi
     done
 
     # Create distributions
-    python setup.py -q sdist bdist_wheel
-
-    # Install twine, module used to upload to pypi
-    pip install twine --user
+    python setup.py sdist bdist_wheel
 
     # Upload to pypi or testpypi, overwrite if files already exist.
     twine upload dist/* --skip-existing --verbose \
