@@ -47,7 +47,7 @@ upload_to_pypi() {
 
     # Create virtualenv to download twine
     python -m venv venv
-    source venv/bin/activate
+    . venv/bin/activate
 
     # Install twine, module used to upload to pypi
     python -m pip install --quiet twine
