@@ -48,7 +48,7 @@ build_package() {
     # Remove build artifacts.
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
-    # Create distributions
+    # Create distributions.
     python setup.py --quiet sdist bdist_wheel
 }
 
