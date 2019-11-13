@@ -8,7 +8,7 @@ git checkout tags/$tag
 version=$(python setup.py --version)
 
 # Check if release tag matches the package version.
-pip install packaging==19.2 >> quiet.log; rm quiet.log
+pip install --quiet packaging==19.2
 
 match=$(python -c "
 from packaging.version import parse
@@ -53,7 +53,7 @@ build_package() {
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
     # Create distributions.
-    python setup.py sdist bdist_wheel >> quiet.log
+    python setup.py --quiet sdist bdist_wheel
 }
 
 upload_package() {
@@ -61,16 +61,14 @@ upload_package() {
     build_package
 
     # Create and activate the virtualenv to download twine.
-    python -m venv venv >> quiet.log
+    python -m venv --quiet venv
     . venv/bin/activate
 
     # Upgrade pip.
-    python -m pip install --upgrade pip >> quiet.log
+    python -m pip install --quiet --upgrade pip
 
     # Install twine which is used to upload the package.
-    python -m pip install twine >> quiet.log; rm quiet.log
-
-    echo "under development"; exit 1
+    python -m pip --quiet install twine
 
     # Upload the package to PyPI or Test PyPI. Overwrite if files already exist.
     python -m twine upload dist/* --skip-existing --verbose \
