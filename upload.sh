@@ -34,14 +34,14 @@ print(action)
 repository=$(python -c "
 from packaging.version import parse, Version
 
-version = parse($tag)
+version = parse('$tag')
 if isinstance(version, Version):
     if version.is_devrelease:
         print('Test PyPI')
 
     if not version.is_devrelease \
         and not version.is_postrelease \
-        and version.is_prerelease:
+        and not version.is_prerelease:
         print('PyPI')
 ")
 
