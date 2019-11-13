@@ -9,5 +9,5 @@ LABEL "repository"="gh-action-pypi-upload"
 LABEL "maintainer"="support@featurelabs.com"
 
 ADD upload.sh /upload.sh
-RUN ["chmod", "+x", "upload.sh"]
+RUN ["chmod", "777", "upload.sh"]
 ENTRYPOINT ["/upload.sh"]
