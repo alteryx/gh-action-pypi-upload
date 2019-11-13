@@ -70,9 +70,11 @@ upload_package() {
     # Install twine which is used to upload the package.
     python -m pip install twine >> quiet.log; rm quiet.log
 
+    echo "under development"; exit 1
+
     # Upload the package to PyPI or Test PyPI. Overwrite if files already exist.
-    # python -m twine upload dist/* --skip-existing --verbose \
-    #    --username $1 --password $2 --repository-url $3
+    python -m twine upload dist/* --skip-existing --verbose \
+       --username $1 --password $2 --repository-url $3
 }
 
 release_package() {
