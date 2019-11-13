@@ -8,6 +8,8 @@ git checkout tags/$tag
 version=$(python setup.py --version)
 
 # Check if release tag matches the package version.
+pip install packaging==19.2
+
 match=$(python -c "
 from packaging.version import parse
 
