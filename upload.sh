@@ -7,7 +7,7 @@ git checkout tags/$tag
 # Get package version.
 version=$(python setup.py --version)
 
-chmod 777 -R /github/home/.cache/pip
+chmod 777 -R /github/home/.cache
 
 # Check if release tag matches the package version.
 pip install packaging==19.2 >> quiet.log; rm quiet.log
