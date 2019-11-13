@@ -53,12 +53,12 @@ build_package() {
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
     # Create distributions.
-    python setup.py --quiet sdist bdist_wheel
+    python setup.py sdist bdist_wheel >> quiet.log
 }
 
 upload_package() {
     # Build the package to upload.
-    build_package >> quiet.log
+    build_package
 
     # Create and activate the virtualenv to download twine.
     python -m venv venv >> quiet.log
