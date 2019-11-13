@@ -39,12 +39,11 @@ from packaging.version import parse, Version
 
 version = parse('$tag')
 if isinstance(version, Version):
+
     if version.is_devrelease:
         print('Test PyPI')
 
-    if not version.is_devrelease \
-        and not version.is_postrelease \
-        and not version.is_prerelease:
+    else:
         print('PyPI')
 ")
 
