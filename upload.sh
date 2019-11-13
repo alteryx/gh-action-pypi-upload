@@ -1,9 +1,25 @@
 #!/bin/sh
 
-# Get release tag from environment.
+# Get release tag from environment and checkout branch.
 tag=$(basename $GITHUB_REF)
+git checkout tags/$tag
 
-# Get action that triggered the release event.
+# Get package version.
+version=$(python setup.py --version)
+
+# Check if release tag matches the package version.
+match=$(python -c "
+from packaging.version import parse
+
+match = parse('$tag') == parse('$version')
+print(match)
+")
+
+if [ $match = "False" ]; then
+    echo "Release $tag does not match package $version"
+    exit 1
+
+# Get action that triggered event.
 action=$(python -c "
 import json
 
@@ -14,31 +30,22 @@ with open('$GITHUB_EVENT_PATH', 'r') as file:
 print(action)
 ")
 
-# Infer whether to use PyPI or Test PyPI from the release tag.
+# Infer which repository to use.
 repository=$(python -c "
-import re
+from packaging.version import parse, Version
 
-pattern = '(?P<version>^v\d+.\d+.\d+)'
-pattern += '(?P<suffix>.*)?'
-pattern = re.compile(pattern)
-match = pattern.search('$tag')
-
-if match:
-    match = match.groupdict()
-    keys = ['version', 'suffix']
-    version, suffix = map(match.get, keys)
-
-    if version and not suffix:
-        print('PyPI')
-
-    if version and suffix.startswith('.dev'):
+version = parse($tag)
+if isinstance(version, Version):
+    if version.is_devrelease:
         print('Test PyPI')
+
+    if not version.is_devrelease \
+        and not version.is_postrelease \
+        and version.is_prerelease:
+        print('PyPI')
 ")
 
 build_package() {
-    # Checkout release tag.
-    git checkout tags/$tag
-
     # Remove build artifacts.
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
@@ -79,6 +86,7 @@ release_package() {
     else
         echo "Unable to make inference on release $tag"
         exit 1
+
     fi
 }
 
