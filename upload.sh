@@ -61,8 +61,7 @@ upload_package() {
     build_package
 
     # Create and activate the virtualenv to download twine.
-    python -m virtualenv --quiet venv
-    . venv/bin/activate
+    python -m venv venv; . venv/bin/activate
 
     # Upgrade pip.
     python -m pip install --quiet --upgrade pip
