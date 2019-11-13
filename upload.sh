@@ -8,7 +8,7 @@ git checkout tags/$tag
 version=$(python setup.py --version)
 
 # Check if release tag matches the package version.
-sudo -H pip install packaging==19.2
+pip install --quiet packaging==19.2
 
 match=$(python -c "
 from packaging.version import parse
@@ -20,6 +20,7 @@ print(match)
 if [ $match = "False" ]; then
     echo "Release $tag does not match package $version"
     exit 1
+fi
 
 # Get action that triggered event.
 action=$(python -c "
