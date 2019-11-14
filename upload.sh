@@ -17,7 +17,7 @@ match = parse('$tag') == parse('$version')
 print(match)
 ")
 
-if [ $match = "False" ]; then
+if [ $match != "True" ]; then
     echo "Release $tag does not match package $version"
     exit 1
 fi
@@ -39,12 +39,10 @@ from packaging.version import parse, Version
 
 version = parse('$tag')
 if isinstance(version, Version):
-
     if version.is_devrelease:
         print('Test PyPI')
 
-    else:
-        print('PyPI')
+    else: print('PyPI')
 ")
 
 build_package() {
