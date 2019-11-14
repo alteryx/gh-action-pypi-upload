@@ -66,6 +66,10 @@ upload_package() {
     # Install twine which is used to upload the package.
     python -m pip --quiet install twine
 
+    echo
+    echo "----------  Uploading to $repository  --------------------"
+    echo
+
     # Upload the package to PyPI or Test PyPI. Overwrite if files already exist.
     python -m twine upload dist/* --skip-existing --verbose \
        --username $1 --password $2 --repository-url $3
