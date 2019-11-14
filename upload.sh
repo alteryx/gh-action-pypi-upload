@@ -39,10 +39,8 @@ from packaging.version import parse, Version
 
 version = parse('$tag')
 if isinstance(version, Version):
-    if version.is_devrelease:
-        print('Test PyPI')
-
-    else: print('PyPI')
+    repository = 'Test PyPI' if version.is_devrelease else 'PyPI'
+    print(repository)
 ")
 
 build_package() {
