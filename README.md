@@ -21,10 +21,10 @@ jobs:
     - name: Upload to PyPI
       uses: FeatureLabs/gh-action-pypi-upload@master
       env:
-        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TEST_PYPI_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         TEST_PYPI_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+        TEST_PYPI_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
 ```
 
 Then, add the following secrets to the repository settings:
