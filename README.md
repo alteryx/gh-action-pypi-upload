@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Upload to PyPI
-      uses: FeatureLabs/gh-action-pypi-upload@main
+      uses: FeatureLabs/gh-action-pypi-upload@v1
       env:
         PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
         PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
