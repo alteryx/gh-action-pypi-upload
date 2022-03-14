@@ -4,8 +4,14 @@
 tag=$(basename $GITHUB_REF)
 git checkout tags/$tag
 
+# Get library name.
+libname=$(grep 'name\s=' setup.cfg | grep -o '[^ ]*$')
+
 # Get package version.
-version=$(python setup.py --version)
+version=$(grep '__version__\s=' $libname/version.py | grep -o '[^ ]*$')
+
+# Upgrade pip.
+python -m pip install --quiet --upgrade pip
 
 # Check if release tag matches the package version.
 pip install --quiet "packaging>=17.0"
@@ -44,11 +50,14 @@ if isinstance(version, Version):
 ")
 
 build_package() {
+    # Upgrade build.
+    python -m pip install --quiet --upgrade build
+
     # Remove build artifacts.
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
     # Create distributions.
-    python setup.py --quiet sdist bdist_wheel
+    python -m build
 }
 
 upload_package() {
@@ -56,6 +65,7 @@ upload_package() {
     build_package
 
     # Create and activate the virtualenv to download twine.
+    # Done to keep twine separated in a clean upload environment.
     python -m venv venv; . venv/bin/activate
 
     # Upgrade pip.
