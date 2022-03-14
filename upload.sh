@@ -10,6 +10,9 @@ libname=$(grep 'name\s=' setup.cfg | grep -o '[^ ]*$')
 # Get package version.
 version=$(grep '__version__\s=' $libname/version.py | grep -o '[^ ]*$')
 
+# Upgrade pip.
+python -m pip install --quiet --upgrade pip
+
 # Check if release tag matches the package version.
 pip install --quiet "packaging>=17.0"
 
@@ -47,6 +50,9 @@ if isinstance(version, Version):
 ")
 
 build_package() {
+    # Upgrade build.
+    python -m pip install --quiet --upgrade build
+
     # Remove build artifacts.
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
@@ -55,18 +61,16 @@ build_package() {
 }
 
 upload_package() {
+    # Build the package to upload.
+    build_package
+
     # Create and activate the virtualenv to download twine.
+    # Done to keep twine separated in a clean upload environment.
     python -m venv venv; . venv/bin/activate
 
     # Upgrade pip.
     python -m pip install --quiet --upgrade pip
-    
-    # Upgrade build.
-    python -m pip install --quiet --upgrade build
 
-    # Build the package to upload.
-    build_package
-    
     # Install twine which is used to upload the package.
     python -m pip --quiet install twine
 
