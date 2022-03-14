@@ -5,7 +5,7 @@ tag=$(basename $GITHUB_REF)
 git checkout tags/$tag
 
 # Get library name.
-libname=$(grep 'name\s=' setup.cfg | grep -o '[a-z_-]*$')
+libname=$(grep 'name\s=' setup.cfg | grep -o '[^ ]*$')
 
 # Get package version.
 version=$(grep '__version__\s=' $libname/version.py | grep -o '[^ ]*$')
