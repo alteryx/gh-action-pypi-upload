@@ -4,8 +4,11 @@
 tag=$(basename $GITHUB_REF)
 git checkout tags/$tag
 
+# Get library name.
+libname=$(grep 'name\s=' setup.cfg | grep -o '[a-z_-]*$')
+
 # Get package version.
-version=$(python setup.py --version)
+version=$(grep '__version__\s=' $libname/version.py | grep -o '[^ ]*$')
 
 # Check if release tag matches the package version.
 pip install --quiet "packaging>=17.0"
@@ -48,7 +51,7 @@ build_package() {
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
     # Create distributions.
-    python setup.py --quiet sdist bdist_wheel
+    python -m build
 }
 
 upload_package() {
@@ -60,7 +63,10 @@ upload_package() {
 
     # Upgrade pip.
     python -m pip install --quiet --upgrade pip
-
+    
+    # Upgrade build.
+    python -m pip install --quiet --upgrade build
+    
     # Install twine which is used to upload the package.
     python -m pip --quiet install twine
 
