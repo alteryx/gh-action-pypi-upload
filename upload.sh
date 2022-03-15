@@ -4,17 +4,17 @@
 tag=$(basename $GITHUB_REF)
 git checkout tags/$tag
 
-# Get library name.
-libname=$(grep 'name\s=' setup.cfg | grep -o '[^ ]*$')
-
-# Get package version.
-version=$(grep '__version__\s=' $libname/version.py | grep -o '[^ ]*$')
-
 # Upgrade pip.
 python -m pip install --quiet --upgrade pip
 
+# Upgrade build.
+python -m pip install --quiet --upgrade build
+
 # Check if release tag matches the package version.
 pip install --quiet "packaging>=17.0"
+
+# Get package version. Must run after installing build.
+version=$(python -c "from pep517.meta import load; metadata = load('.'); print(metadata.version)")
 
 match=$(python -c "
 from packaging.version import parse
@@ -50,9 +50,6 @@ if isinstance(version, Version):
 ")
 
 build_package() {
-    # Upgrade build.
-    python -m pip install --quiet --upgrade build
-
     # Remove build artifacts.
     rm -rf .eggs/ rm -rf dist/ rm -rf build/
 
