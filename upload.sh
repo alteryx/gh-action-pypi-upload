@@ -10,6 +10,9 @@ python -m pip install --quiet --upgrade pip
 # Upgrade build.
 python -m pip install --quiet --upgrade build
 
+# Upgrade setuptools.
+python -m pip install --quiet --upgrade setuptools
+
 # Check if release tag matches the package version.
 pip install --quiet "packaging>=17.0"
 
