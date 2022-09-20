@@ -54,7 +54,10 @@ if isinstance(version, Version):
 
 build_package() {
     # Remove build artifacts.
-    rm -rf .eggs/ rm -rf dist/ rm -rf build/
+    rm -rf .eggs/ rm -rf dist/ rm -rf build/ 
+    
+    # Remove documentation files 
+    rm -rf docs/
 
     # Create distributions.
     python -m build
