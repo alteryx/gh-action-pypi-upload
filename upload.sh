@@ -17,7 +17,7 @@ python -m pip install --quiet --upgrade setuptools
 pip install --quiet "packaging>=17.0"
 
 # Get package version. Must run after installing build.
-version=$(python -c "from pep517.meta import load; metadata = load('.'); print(metadata.version)")
+version=$(python -c 'import setuptools; setuptools.setup()' --version)
 
 match=$(python -c "
 from packaging.version import parse
