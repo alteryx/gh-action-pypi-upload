@@ -2,6 +2,12 @@
 
 # Get release tag from environment and checkout branch.
 tag=$(basename $GITHUB_REF)
+
+# sometimes $GITHUB_REF is empty
+# See: https://github.com/actions/runner/issues/2788
+if [ $tag == ""]; then
+    tag=$TAG_NAME
+fi
 git checkout tags/$tag
 
 # Upgrade pip.
